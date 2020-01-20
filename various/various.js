@@ -1,43 +1,49 @@
-module.exports = function (RED) {
-  function Various (config) {
-    RED.nodes.createNode(this, config)
-    this.field = config.field || 'payload'
-    this.fieldType = config.fieldType || 'msg'
-    var node = this
+module.exports = function(RED){
+    function Various(config){
+        RED.nodes.createNode(this, config);
+        this.field = config.field || "payload";
+        this.fieldType = config.fieldType || "msg";
+        var node = this;
 
-    const typeDetect = require('type-detect') // TODO: Require typeof module from npm here
-    const md5 = require('md5')
+        const typeDetect = require('type-detect'); //TODO: Require typeof module from npm here
+        const md5 = require('md5');
+        const ObjectID = require("bson-objectid");
 
-    this.on('input', function (msg) {
-      // Declcare variables for each of the input fields
-      let actionType = config.actionType
-      let typeResult = ''
+        this.on("input", function(msg){
+            //Declcare variables for each of the input fields
+            let actionType = config.actionType;
+            let typeResult = "";
 
-      // Process logic based on actionType
-      switch (actionType) {
-        case '1':
-          typeResult = typeDetect(msg.payload)
-          break
-        case '2':
-          typeResult = md5(msg.payload)
-          break
-      }
+            //Process logic based on actionType
+            switch (actionType){
+                case "1":
+                    typeResult = typeDetect(msg.payload);
+                    break;
+                case "2":
+                    typeResult = md5(msg.payload);
+                    break;
+                case "3":
+                    typeResult = ObjectID()
+                    break;
+            }
 
-      switch (node.fieldType) {
-        case 'msg':
-          RED.util.setMessageProperty(msg, node.field, typeResult)
-          break
-        case 'flow':
-          node.context().flow.set(node.field, typeResult)
-          break
-        case 'global':
-          node.context().global.set(node.field, typeResult)
-          break
-      }
+            switch (node.fieldType) {
+                case "msg":
+                    RED.util.setMessageProperty(msg, node.field, typeResult);
+                    break;
+                case "flow":
+                    node.context().flow.set(node.field, typeResult);
+                    break;
+                case "global":
+                    node.context().global.set(node.field, typeResult);
+                    break;
+            }
+            
+            
+            node.send(msg);
+        });
+    }
 
-      node.send(msg)
-    })
-  }
+    RED.nodes.registerType("various", Various);
 
-  RED.nodes.registerType('various', Various)
 }
