@@ -1,54 +1,113 @@
-<script type="text/javascript">
-    RED.nodes.registerType("various", {
+<script type='text/javascript'>
+  const agiliteUtilsVariousFunctions = {
+    updateActionType: () => {
+        const value = $('#node-input-actionType option:selected').val()
+
+        switch (value) {
+          case '4': // Create HMAC Object
+            document.querySelector('#rowAlgorithm').style.display = 'block'
+            document.querySelector('#rowKey').style.display = 'block'
+            document.querySelector('#rowDigest').style.display = 'block'
+            document.querySelector('#rowByteSize').style.display = 'none'
+            document.querySelector('#rowOutputType').style.display = 'none'
+            break
+          case '5': // Generate Nonce
+            document.querySelector('#rowAlgorithm').style.display = 'none'
+            document.querySelector('#rowKey').style.display = 'none'
+            document.querySelector('#rowDigest').style.display = 'none'
+            document.querySelector('#rowByteSize').style.display = 'block'
+            document.querySelector('#rowOutputType').style.display = 'block'
+            break
+          default:
+            document.querySelector('#rowAlgorithm').style.display = 'none'
+            document.querySelector('#rowKey').style.display = 'none'
+            document.querySelector('#rowDigest').style.display = 'none'
+            document.querySelector('#rowByteSize').style.display = 'none'
+            document.querySelector('#rowOutputType').style.display = 'none'
+        }
+    }
+  }
+
+    RED.nodes.registerType('various', {
         category: 'utilities',
-        color: "#ffa4a2",
-        icon: "various.png",
+        color: '#ffa4a2',
+        icon: 'various.png',
         inputs:1,
         outputs:1,
-        paletteLabel: "various",
+        paletteLabel: 'various',
         defaults: {
-            name: {value:""},
-            field: {value:"payload"},
-            fieldType: {value:"msg"},
-            actionType: {value:"", required: true}
+            name: {value:''},
+            field: {value:'payload'},
+            fieldType: {value:'msg'},
+            actionType: {value:'', required: true},
+            algorithm: {value:''},
+            key: {value:''},
+            digest: {value:''},
+            byteSize: {value:''},
+            outputType: {value:''}
         },
-        label: function(){
-            return this.name||"Various";
+        label: () => {
+            return this.name || 'Various'
         },
-        oneditprepare: function() {
-            if (!this.fieldType) {
-                this.fieldType = 'msg';
-            }
-            $("#node-input-field").typedInput({
-                default: 'msg',
-                types: ['msg','flow','global'],
-                typeField: $("#node-input-fieldType")
-            });
+        oneditprepare: () => {
+          $('#node-input-actionType').change(() => {agiliteUtilsVariousFunctions.updateActionType()})
+          agiliteUtilsVariousFunctions.updateActionType()
+
+          if (!this.fieldType) this.fieldType = 'msg'
+
+          $('#node-input-field').typedInput({
+              default: 'msg',
+              types: ['msg','flow','global'],
+              typeField: $('#node-input-fieldType')
+          })
         }
-  });
+  })
 </script>
 
-<script type="text/x-red" data-template-name="various">
-    <div class="form-row">
-        <label for="node-input-actionType"><i class="fa fa-arrow-circle-right"></i> Action Type</label>
-        <select id="node-input-actionType" style="width: auto;">
-            <option value="">-Select-</option>
-            <option value="1">Detect Payload Type</option>
-            <option value="2">Generate MD5 Hash</option>
-            <option value="3">Generate MongoDB Object Id</option>
+<script type='text/x-red' data-template-name='various'>
+    <div class='form-row'>
+        <label for='node-input-actionType'><i class='fa fa-arrow-circle-right'></i> Action Type</label>
+        <select id='node-input-actionType' style='width: auto'>
+            <option value=''>-Select-</option>
+            <option value='4'>Create HMAC Object</option>
+            <option value='1'>Detect Payload Type</option>
+            <option value='2'>Generate MD5 Hash</option>
+            <option value='3'>Generate MongoDB Object Id</option>
+            <option value='5'>Generate Nonce</option>
+            <option value='6'>Is Number</option>
         </select>
     </div>
-    <div class="form-row">
-        <label for="node-input-field"><i class="fa fa-edit"></i> <span data-i18n="template.label.property">Output to</span></label>
-        <input type="text" id="node-input-field" placeholder="payload" style="width:250px;">
-        <input type="hidden" id="node-input-fieldType">
+    <div class="form-row" id="rowAlgorithm">
+      <label for="node-input-algorithm"><i class="fa fa-key"></i> Algorithm {{m}}</label>
+      <input type="text" id="node-input-algorithm" />
     </div>
-    <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Node Name" />
+    <div class="form-row" id="rowKey">
+      <label for="node-input-key"><i class="fa fa-key"></i> Key {{m}}</label>
+      <input type="text" id="node-input-key" />
+    </div>
+    <div class="form-row" id="rowDigest">
+      <label for="node-input-digest"><i class="fa fa-key"></i> Digest {{m}}</label>
+      <input type="text" id="node-input-digest" />
+    </div>
+    <div class="form-row" id="rowByteSize">
+      <label for="node-input-byteSize"><i class="fa fa-key"></i> Byte Size {{m}}</label>
+      <input type="text" id="node-input-byteSize" />
+    </div>
+    <div class="form-row" id="rowOutputType">
+      <label for="node-input-outputType"><i class="fa fa-key"></i> Output Type {{m}}</label>
+      <input type="text" id="node-input-outputType" />
+    </div>
+    <div class='form-row'>
+        <label for='node-input-field'><i class='fa fa-edit'></i> <span data-i18n='template.label.property'>Output to</span></label>
+        <input type='text' id='node-input-field' placeholder='payload' style='width:250px'>
+        <input type='hidden' id='node-input-fieldType'>
+    </div>
+    <div class='form-row'>
+        <label for='node-input-name'><i class='fa fa-tag'></i> Name</label>
+        <input type='text' id='node-input-name' placeholder='Node Name' />
     <div>
 </script>
 
-<script type="text/x-red" data-help-name="various">
-    <p>Detects Payload type, i.e: Strings, Numbers, Objects, Arrays.</p>
+<script type='text/x-red' data-help-name='various'>
+    <p></p>
 </script>

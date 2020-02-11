@@ -1,49 +1,109 @@
-module.exports = function(RED){
-    function Various(config){
-        RED.nodes.createNode(this, config);
-        this.field = config.field || "payload";
-        this.fieldType = config.fieldType || "msg";
-        var node = this;
+module.exports = function (RED) {
+  function Various (config) {
+    RED.nodes.createNode(this, config)
+    const node = this
+    this.field = config.field || 'payload'
+    this.fieldType = config.fieldType || 'msg'
 
-        const typeDetect = require('type-detect'); //TODO: Require typeof module from npm here
-        const md5 = require('md5');
-        const ObjectID = require("bson-objectid");
+    this.on('input', (msg) => {
+      const TypeDetect = require('agilite-utils/type-detect')
+      const EnumsTypeDetect = require('agilite-utils/enums-type-detect')
+      const Utils = require('agilite-utils')
+      const MD5 = require('md5')
+      const ObjectID = require('bson-objectid')
+      const Mustache = require('mustache')
+      const Crypto = require('crypto')
 
-        this.on("input", function(msg){
-            //Declcare variables for each of the input fields
-            let actionType = config.actionType;
-            let typeResult = "";
+      let typeResult = ''
+      let errMsg = null
+      let value = null
+      let value2 = null
+      let value3 = null
 
-            //Process logic based on actionType
-            switch (actionType){
-                case "1":
-                    typeResult = typeDetect(msg.payload);
-                    break;
-                case "2":
-                    typeResult = md5(msg.payload);
-                    break;
-                case "3":
-                    typeResult = ObjectID()
-                    break;
+      try {
+        // Validate
+        switch (config.actionType) {
+          case '2': // Generate MD5 Hash
+            if (!msg.payload || (TypeDetect(msg.payload) !== EnumsTypeDetect.STRING)) {
+              errMsg = 'Please provide a valid string to hash'
             }
 
-            switch (node.fieldType) {
-                case "msg":
-                    RED.util.setMessageProperty(msg, node.field, typeResult);
-                    break;
-                case "flow":
-                    node.context().flow.set(node.field, typeResult);
-                    break;
-                case "global":
-                    node.context().global.set(node.field, typeResult);
-                    break;
+            break
+          case '4': // Create HMAC Object
+            value = Mustache.render(config.algorithm, msg)
+            value2 = Mustache.render(config.key, msg)
+            value3 = Mustache.render(config.digest, msg)
+
+            if (!value || (TypeDetect(value) !== EnumsTypeDetect.STRING)) {
+              errMsg = 'Please provide a valid Algorithm in order to create a HMAC Object'
+            } else if (!value2 || (TypeDetect(value2) !== EnumsTypeDetect.STRING)) {
+              errMsg = 'Please provide a valid Key in order to create a HMAC Object'
+            } else if (!value3 || (TypeDetect(value3) !== EnumsTypeDetect.STRING)) {
+              errMsg = 'Please provide a valid Digest in order to create a HMAC Object'
+            } else if (!msg.payload || (TypeDetect(msg.payload) !== EnumsTypeDetect.STRING)) {
+              errMsg = 'Please provide a valid string payload in order to create a HMAC Object'
             }
-            
-            
-            node.send(msg);
-        });
-    }
 
-    RED.nodes.registerType("various", Various);
+            break
+          case '5': // Generate Nonce
+            value = Mustache.render(config.byteSize, msg)
+            value2 = Mustache.render(config.outputType, msg)
 
+            if (!value || !Utils.isNumber(value)) {
+              errMsg = 'Please provide a valid Size in order to generate a Nonce'
+            } else if (!value2 || (TypeDetect(value2) !== EnumsTypeDetect.STRING)) {
+              errMsg = 'Please provide a valid Output Type in order to generate a Nonce'
+            }
+
+            break
+        }
+
+        if (errMsg) {
+          return node.error(errMsg, msg)
+        }
+
+        // Process logic based on actionType
+        switch (config.actionType) {
+          case '1': // Detect Payload Type
+            typeResult = TypeDetect(msg.payload)
+            break
+          case '2': // Generate MD5 Hash
+            typeResult = MD5(msg.payload)
+            break
+          case '3': // Generate MongoDB Object Id
+            typeResult = ObjectID()
+            break
+          case '4': // Create HMAC Object
+            typeResult = Crypto.createHmac(value, value2).update(msg.payload).digest(value3)
+            break
+          case '5': // Generate Nonce
+            value = parseInt(value)
+            typeResult = Crypto.randomBytes(value).toString(value2)
+            break
+          case '6': // Is Number
+            typeResult = Utils.isNumber(msg.payload)
+            break
+        }
+
+        switch (node.fieldType) {
+          case 'msg':
+            RED.util.setMessageProperty(msg, node.field, typeResult)
+            break
+          case 'flow':
+            node.context().flow.set(node.field, typeResult)
+            break
+          case 'global':
+            node.context().global.set(node.field, typeResult)
+            break
+        }
+
+        node.send(msg)
+      } catch (e) {
+        console.log(e.stack || e.message || e)
+        node.error(e.message || e.stack || e, msg)
+      }
+    })
+  }
+
+  RED.nodes.registerType('various', Various)
 }
