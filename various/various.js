@@ -13,12 +13,15 @@ module.exports = function (RED) {
       const ObjectID = require('bson-objectid')
       const Mustache = require('mustache')
       const Crypto = require('crypto')
+      const Entities = require('entities')
+      const UUID = require('uuid')
 
       let typeResult = ''
       let errMsg = null
       let value = null
       let value2 = null
       let value3 = null
+      let data = null
 
       try {
         // Validate
@@ -56,6 +59,15 @@ module.exports = function (RED) {
             }
 
             break
+          case '7': // Encode XML
+          case '8': // Decode XML
+            // Make sure data is a string
+            if (TypeDetect(msg.payload) !== EnumsTypeDetect.STRING) {
+              msg.payload = ''
+            }
+
+            data = msg.payload
+            break
         }
 
         if (errMsg) {
@@ -82,6 +94,15 @@ module.exports = function (RED) {
             break
           case '6': // Is Number
             typeResult = Utils.isNumber(msg.payload)
+            break
+          case '7': // Encode XML
+            typeResult = Entities.encodeXML(data)
+            break
+          case '8': // Decode XML
+            typeResult = Entities.decodeXML(data)
+            break
+          case '9': // Generate UUID
+            typeResult = UUID.v1()
             break
         }
 
