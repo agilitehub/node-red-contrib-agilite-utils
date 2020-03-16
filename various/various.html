@@ -1,66 +1,87 @@
 <script type='text/javascript'>
   const agiliteUtilsVariousFunctions = {
-    updateActionType: () => {
-        const value = $('#node-input-actionType option:selected').val()
+    updateActionType: function(){
+      const value = $('#node-input-actionType option:selected').val()
 
-        switch (value) {
-          case '4': // Create HMAC Object
-            document.querySelector('#rowAlgorithm').style.display = 'block'
-            document.querySelector('#rowKey').style.display = 'block'
-            document.querySelector('#rowDigest').style.display = 'block'
-            document.querySelector('#rowByteSize').style.display = 'none'
-            document.querySelector('#rowOutputType').style.display = 'none'
-            break
-          case '5': // Generate Nonce
-            document.querySelector('#rowAlgorithm').style.display = 'none'
-            document.querySelector('#rowKey').style.display = 'none'
-            document.querySelector('#rowDigest').style.display = 'none'
-            document.querySelector('#rowByteSize').style.display = 'block'
-            document.querySelector('#rowOutputType').style.display = 'block'
-            break
-          default:
-            document.querySelector('#rowAlgorithm').style.display = 'none'
-            document.querySelector('#rowKey').style.display = 'none'
-            document.querySelector('#rowDigest').style.display = 'none'
-            document.querySelector('#rowByteSize').style.display = 'none'
-            document.querySelector('#rowOutputType').style.display = 'none'
-        }
+      switch (value) {
+        case '4': // Create HMAC Object
+          document.querySelector('#rowAlgorithm').style.display = 'block'
+          document.querySelector('#rowKey').style.display = 'block'
+          document.querySelector('#rowDigest').style.display = 'block'
+          document.querySelector('#rowByteSize').style.display = 'none'
+          document.querySelector('#rowOutputType').style.display = 'none'
+          break
+        case '5': // Generate Nonce
+          document.querySelector('#rowAlgorithm').style.display = 'none'
+          document.querySelector('#rowKey').style.display = 'none'
+          document.querySelector('#rowDigest').style.display = 'none'
+          document.querySelector('#rowByteSize').style.display = 'block'
+          document.querySelector('#rowOutputType').style.display = 'block'
+          break
+        default:
+          document.querySelector('#rowAlgorithm').style.display = 'none'
+          document.querySelector('#rowKey').style.display = 'none'
+          document.querySelector('#rowDigest').style.display = 'none'
+          document.querySelector('#rowByteSize').style.display = 'none'
+          document.querySelector('#rowOutputType').style.display = 'none'
+      }
     }
   }
 
-    RED.nodes.registerType('various', {
-        category: 'utilities',
-        color: '#ffa4a2',
-        icon: 'various.png',
-        inputs:1,
-        outputs:1,
-        paletteLabel: 'various',
-        defaults: {
-            name: {value:''},
-            field: {value:'payload'},
-            fieldType: {value:'msg'},
-            actionType: {value:'', required: true},
-            algorithm: {value:''},
-            key: {value:''},
-            digest: {value:''},
-            byteSize: {value:''},
-            outputType: {value:''}
-        },
-        label: () => {
-            return this.name || 'Various'
-        },
-        oneditprepare: () => {
-          $('#node-input-actionType').change(() => {agiliteUtilsVariousFunctions.updateActionType()})
-          agiliteUtilsVariousFunctions.updateActionType()
+  RED.nodes.registerType('various', {
+    category: 'utilities',
+    color: '#ffa4a2',
+    icon: 'various.png',
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'various',
+    defaults: {
+      name: {
+        value: ''
+      },
+      field: {
+        value: 'payload'
+      },
+      fieldType: {
+        value: 'msg'
+      },
+      actionType: {
+        value: '',
+        required: true
+      },
+      algorithm: {
+        value: ''
+      },
+      key: {
+        value: ''
+      },
+      digest: {
+        value: ''
+      },
+      byteSize: {
+        value: ''
+      },
+      outputType: {
+        value: ''
+      }
+    },
+    label: function(){
+      return this.name || 'Various'
+    },
+    oneditprepare: function(){
+      $('#node-input-actionType').change(function() {
+        agiliteUtilsVariousFunctions.updateActionType()
+      })
+      agiliteUtilsVariousFunctions.updateActionType()
 
-          if (!this.fieldType) this.fieldType = 'msg'
+      if (!this.fieldType) this.fieldType = 'msg'
 
-          $('#node-input-field').typedInput({
-              default: 'msg',
-              types: ['msg','flow','global'],
-              typeField: $('#node-input-fieldType')
-          })
-        }
+      $('#node-input-field').typedInput({
+        default: 'msg',
+        types: ['msg', 'flow', 'global'],
+        typeField: $('#node-input-fieldType')
+      })
+    }
   })
 </script>
 
