@@ -10,7 +10,7 @@ module.exports = function (RED) {
 
     this.on('input', function (msg) {
       // Declcare variables for each of the input fields
-      let actionType = config.actionType
+      const actionType = config.actionType
       let dateTimeValue = config.dateTimeValue
       let success = true
       let errorMessage = ''

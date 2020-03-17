@@ -1,105 +1,108 @@
-<script type="text/javascript">
-    var agiliteUtilityFunctions = {
-        updateActionType:function(){
-            var value = $("#node-input-actionType option:selected").val();
+<script type='text/javascript'>
+  var agiliteUtilityFunctions = {
+    updateActionType: function () {
+      var value = $('#node-input-actionType option:selected').val()
 
-            switch(value){
-            case "pad":
-                document.querySelector("#rowParam").style.display = "block";
-                document.querySelector("#rowParam2").style.display = "block";
-                break;
-            default:
-                document.querySelector("#rowParam").style.display = "none";
-                document.querySelector("#rowParam2").style.display = "none";
-                break;
-            }
-        }
+      switch (value) {
+        case 'pad':
+          document.querySelector('#rowParam').style.display = 'block'
+          document.querySelector('#rowParam2').style.display = 'block'
+          break
+        default:
+          document.querySelector('#rowParam').style.display = 'none'
+          document.querySelector('#rowParam2').style.display = 'none'
+          break
+      }
     }
+  }
 
-    RED.nodes.registerType("lodash", {
-        category: 'utilities',
-        color: "#ffa4a2",
-        icon: "lodash.png",
-        inputs:1,
-        outputs:1,
-        paletteLabel: "lodash",
-        defaults: {
-            name: {
-                value:""
-            },
-            field: {
-                value:"payload"
-            },
-            fieldType: {
-                value:"msg"
-            },
-            actionType: {
-                value:"", required: true
-            },
-            inputValue: {
-                value:"", 
-                required: true
-            },
-            param: {
-                value: ""
-            },
-            param2: {
-                value: ""
-            }
+  RED.nodes.registerType('lodash', {
+    category: 'utilities',
+    color: '#ffa4a2',
+    icon: 'lodash.png',
+    inputs: 1,
+    outputs: 1,
+    paletteLabel: 'lodash',
+    defaults: {
+      name: {
+        value: ''
+      },
+      field: {
+        value: 'payload'
+      },
+      fieldType: {
+        value: 'msg'
+      },
+      actionType: {
+        value: '',
+        required: true
+      },
+      inputValue: {
+        value: '',
+        required: true
+      },
+      param: {
+        value: ''
+      },
+      param2: {
+        value: ''
+      }
 
-        },
-        label: function(){
-            return this.name||"Lodash";
-        },
-        oneditprepare: function() {
-            $("#node-input-actionType").change(function(){agiliteUtilityFunctions.updateActionType()});
-            agiliteUtilityFunctions.updateActionType();
+    },
+    label: function () {
+      return this.name || 'Lodash'
+    },
+    oneditprepare: function () {
+      $('#node-input-actionType').change(function () {
+        agiliteUtilityFunctions.updateActionType()
+      })
+      agiliteUtilityFunctions.updateActionType()
 
-            if (!this.fieldType) {
-                this.fieldType = 'msg';
-            }
-            $("#node-input-field").typedInput({
-                default: 'msg',
-                types: ['msg','flow','global'],
-                typeField: $("#node-input-fieldType")
-            });
-        }
-  });
+      if (!this.fieldType) {
+        this.fieldType = 'msg'
+      }
+      $('#node-input-field').typedInput({
+        default: 'msg',
+        types: ['msg', 'flow', 'global'],
+        typeField: $('#node-input-fieldType')
+      })
+    }
+  })
 </script>
 
-<script type="text/x-red" data-template-name="lodash">
-    <div class="form-row">
-        <label for="node-input-field"><i class="fa fa-edit"></i> <span data-i18n="template.label.property">Output to</span></label>
-        <input type="text" id="node-input-field" placeholder="payload" style="width:250px;">
-        <input type="hidden" id="node-input-fieldType">
+<script type='text/x-red' data-template-name='lodash'>
+    <div class='form-row'>
+        <label for='node-input-field'><i class='fa fa-edit'></i> <span data-i18n='template.label.property'>Output to</span></label>
+        <input type='text' id='node-input-field' placeholder='payload' style='width:250px'>
+        <input type='hidden' id='node-input-fieldType'>
     </div>
-    <div class="form-row" id="rowActionType">
-        <label for="node-input-actionType"><i class="fa fa-arrow-circle-right"></i> Action Type</label>
-        <select id="node-input-actionType" style="width:auto;">
-            <option value="escape">Escape</option>
-            <option value="pad">Pad</option>
-            <option value="unescape">Unescape</option>
-            <option value="uniqueid">Unique ID</option>
+    <div class='form-row' id='rowActionType'>
+        <label for='node-input-actionType'><i class='fa fa-arrow-circle-right'></i> Action Type</label>
+        <select id='node-input-actionType' style='width:auto'>
+            <option value='escape'>Escape</option>
+            <option value='pad'>Pad</option>
+            <option value='unescape'>Unescape</option>
+            <option value='uniqueid'>Unique ID</option>
         </select>
     </div>
-    <div class="form-row">
-        <label for="node-input-inputValue"> Input {{m}}</label>
-        <input type="text" id="node-input-inputValue" placeholder="{{{payload}}}" />
+    <div class='form-row'>
+        <label for='node-input-inputValue'> Input {{m}}</label>
+        <input type='text' id='node-input-inputValue' placeholder='{{{payload}}}' />
     </div>
-    <div class="form-row" id="rowParam">
-        <label for="node-input-param"> Padding Length</label>
-        <input type="number" id="node-input-param" placeholder="e.g. 3, e.g. 4" />
+    <div class='form-row' id='rowParam'>
+        <label for='node-input-param'> Padding Length</label>
+        <input type='number' id='node-input-param' placeholder='e.g. 3, e.g. 4' />
     </div>
-    <div class="form-row" id="rowParam2">
-        <label for="node-input-param2"> Padding String</label>
-        <input type="text" id="node-input-param2" placeholder="e.g. _-, e.g. ++" />
+    <div class='form-row' id='rowParam2'>
+        <label for='node-input-param2'> Padding String</label>
+        <input type='text' id='node-input-param2' placeholder='e.g. _-, e.g. ++' />
     </div>
-    <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Node Name" />
+    <div class='form-row'>
+        <label for='node-input-name'><i class='fa fa-tag'></i> Name</label>
+        <input type='text' id='node-input-name' placeholder='Node Name' />
     <div>
 </script>
 
-<script type="text/x-red" data-help-name="lodash">
+<script type='text/x-red' data-help-name='lodash'>
     <p>Lodash functions</p>
 </script>

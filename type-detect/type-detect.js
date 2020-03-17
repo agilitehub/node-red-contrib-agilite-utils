@@ -5,7 +5,7 @@ module.exports = function (RED) {
     this.fieldType = config.fieldType || 'msg'
     var node = this
 
-    const typeDetect = require('type-detect') // TODO: Require typeof module from npm here
+    const typeDetect = require('type-detect')
 
     this.on('input', function (msg) {
       // Declcare variables for each of the input fields

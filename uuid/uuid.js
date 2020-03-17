@@ -2,7 +2,7 @@ module.exports = function (RED) {
   function UUID (config) {
     RED.nodes.createNode(this, config)
 
-    let node = this
+    const node = this
     let success = true
     let errorMessage = ''
     let result = ''
