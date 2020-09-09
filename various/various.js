@@ -14,7 +14,7 @@ module.exports = function (RED) {
       const Mustache = require('mustache')
       const Crypto = require('crypto')
       const Entities = require('entities')
-      const UUID = require('uuid')
+      const UUID = require('agilite-utils/uuid')
 
       let typeResult = ''
       let errMsg = null

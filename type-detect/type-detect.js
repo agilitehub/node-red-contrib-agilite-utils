@@ -5,14 +5,14 @@ module.exports = function (RED) {
     this.fieldType = config.fieldType || 'msg'
     var node = this
 
-    const typeDetect = require('type-detect')
+    const TypeDetect = require('agilite-utils/type-detect')
 
     this.on('input', function (msg) {
       // Declcare variables for each of the input fields
       let typeResult = ''
 
       try {
-        typeResult = typeDetect(msg.payload)
+        typeResult = TypeDetect(msg.payload)
 
         switch (node.fieldType) {
           case 'msg':
