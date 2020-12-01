@@ -1,7 +1,7 @@
 {
   "name": "node-red-contrib-agilite-utils",
   "license": "MIT",
-  "version": "7.0.0",
+  "version": "7.2.0",
   "description": "A set of Agilit-e Node-RED Nodes to perform various adhoc tasks without calling 3rd party web services",
   "homepage": "https://agilite.io",
   "repository": {
@@ -45,9 +45,9 @@
     "test": "mocha"
   },
   "dependencies": {
-    "agilite-utils": "7.2.6",
+    "agilite-utils": "7.2.9",
     "bson-objectid": "1.3.1",
-    "entities": "2.0.3",
+    "entities": "2.1.0",
     "jde-date-time": "0.0.8",
     "lodash": "4.17.20",
     "md5": "2.3.0",
@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "chai": "4.2.0",
-    "mocha": "8.1.3"
+    "mocha": "8.2.1"
   },
   "node-red": {
     "nodes": {
