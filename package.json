@@ -49,7 +49,7 @@
     "bson-objectid": "1.3.1",
     "entities": "2.1.0",
     "jde-date-time": "0.0.8",
-    "lodash": "4.17.20",
+    "lodash": "4.18.1",
     "md5": "2.3.0",
     "mustache": "4.0.1"
   },
